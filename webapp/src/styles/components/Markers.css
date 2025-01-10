@@ -1,0 +1,82 @@
+.event-pulsing-icon .static-circle {
+    width: 12px;
+    height: 12px;
+    background-color: rgb(244, 67, 54);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    box-shadow: 0 0 4px rgb(244, 67, 54);
+}
+
+.event-pulsing-icon .pulse-circle {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(244, 67, 54, 0.5); 
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse-circle-animation 3s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    filter: blur(2px);
+}
+
+
+.user-pulsing-icon .static-circle {
+    width: 12px;
+    height: 12px;
+    background-color: rgb(59, 131, 246);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    box-shadow: 0 0 4px rgb(59, 130, 246); 
+}
+
+.user-pulsing-icon .pulse-circle {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(59, 130, 246, 0.5); 
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse-circle-animation 3s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    filter: blur(2px);
+}
+@keyframes pulse-circle-animation {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0.3;
+  }
+}
+  .popup-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    direction: rtl;
+  }
+  .popup-button:hover {
+    background-color: #45a049;
+  }
+  .popup-button:active {
+    background-color: #3e8e41;
+  }
