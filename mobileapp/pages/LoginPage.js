@@ -1,119 +1,146 @@
-import React, { useState,useContext } from 'react';
-import {UserContext} from './UserContext';
-import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ScrollView, I18nManager } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { UserContext } from './UserContext';
+import { loginUser } from "../firebase/firebaseFunctions";
 
-import {loginUser}  from "../firebase/firebaseFunctions";
+// Force RTL layout
+I18nManager.forceRTL(true);
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { setUserData } = useContext(UserContext);
-  const navigator = useNavigation();
+  const navigation = useNavigation();
   
   const handleLogin = () => {
     if (email === '' || password === '') {
-      Alert.alert('Error', 'Please fill in all fields.');
+      Alert.alert('שגיאה', 'אנא מלא את כל השדות.');
     } else {
       return loginUser(email, password).then((userData) => {
         if (userData) {
-          Alert.alert('Success', 'You have successfully logged in.');
+          Alert.alert('הצלחה', 'התחברת בהצלחה.');
           setUserData(userData);
           console.log("LoginPage userData:", userData);
-          navigator.navigate('Home');
+          navigation.navigate('Home');
         } else {
-          Alert.alert('Error', 'Invalid email or password.');
+          Alert.alert('שגיאה', 'אימייל או סיסמה לא נכונים.');
         }
-    });
+      });
     }
   };
+
   const handleRegister = () => {
-    navigator.navigate('Register');
+    navigation.navigate('Register');
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Shomer Ahi</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.formContainer}>
+        <Text style={styles.title}>שומר אחי</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="אימייל"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+            placeholderTextColor="#999"
+          />
+          <Ionicons name="mail-outline" size={24} color="#999" style={styles.icon} />
+        </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+        <View style={styles.inputContainer}>
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+            <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={24} color="#999" />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="סיסמה"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+            placeholderTextColor="#999"
+          />
+          <Ionicons name="lock-closed-outline" size={24} color="#999" style={styles.icon} />
+        </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.submitButton} onPress={handleLogin}>
+          <Text style={styles.submitButtonText}>התחבר</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.footerText}>
-        Don't have an account? <Text style={styles.footerLink} onPress={handleRegister}>Sign up</Text>
-      </Text>
-    </View>
+        <TouchableOpacity onPress={handleRegister}>
+          <Text style={styles.registerLink}>אין לך חשבון? הירשם כאן</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    flexGrow: 1,
+    backgroundColor: "#F7F9FC",
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
     padding: 20,
   },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
+  formContainer: {
+    width: '100%',
+    maxWidth: 400,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 30,
+    color: "#333",
+    textAlign: "center",
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
-    color: '#333',
+    borderBottomWidth: 1,
+    borderBottomColor: '#DDD',
+  },
+  icon: {
+    marginLeft: 10,
   },
   input: {
-    width: '100%',
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    backgroundColor: '#fff',
-  },
-  button: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#007BFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
+    flex: 1,
+    paddingVertical: 10,
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'right',
   },
-  footerText: {
-    marginTop: 20,
-    fontSize: 14,
-    color: '#666',
+  eyeIcon: {
+    padding: 10,
+    position: 'absolute',
+    left: 0,
+    zIndex: 1,
   },
-  footerLink: {
-    color: '#007BFF',
-    fontWeight: 'bold',
+  submitButton: {
+    backgroundColor: "#3498DB",
+    padding: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  registerLink: {
+    textAlign: 'center',
+    color: "#3498DB",
+    fontSize: 16,
+    marginTop: 10,
   },
 });
 
 export default LoginPage;
+
