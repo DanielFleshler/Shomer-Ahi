@@ -4,7 +4,7 @@ import L from "leaflet";
 import '../../styles/components/MapView.css';
 import '../../styles/components/Markers.css';
 import "leaflet/dist/leaflet.css";
-import { handleUserDispatch } from "../Dashboard/DashboardFunctions";
+import { handleUserDispatch,handleRemovingEvent } from "../Dashboard/DashboardFunctions";
 
 const UpdateMapView = ({ center, usersLocations, CreateEvent}) => {
     const map = useMap();
@@ -34,8 +34,19 @@ const UpdateMapView = ({ center, usersLocations, CreateEvent}) => {
             eventMarker.current.setLatLng(center);
           } else {
             eventMarker.current = L.marker(center, { icon: eventPulsingIcon })
+            .bindPopup(
+              `
+              <div>
+                <button onclick="window.removeEvent()" >מחק אירוע</button>
+              </div>
+              `)
               .addTo(map);
+            window.removeEvent = () => {
+              handleRemovingEvent();
+              map.removeLayer(eventMarker.current);
+              eventMarker.current = null;
           }
+        }
         } else if (eventMarker.current) {
           map.removeLayer(eventMarker.current);
           eventMarker.current = null;

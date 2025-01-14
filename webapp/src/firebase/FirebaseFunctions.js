@@ -135,6 +135,41 @@ async function readEventLoaction() {
   }
 }
 
+async function removeEventFromDB() {
+  try {
+    // First remove the eventLocation
+    const eventLocationRef = ref(db, "eventLocation/");
+    const updates = {
+      latitude: 0,
+      longitude: 0,
+    };
+    await update(eventLocationRef, updates);
+    
+    // Get all users
+    const usersSnapshot = await get(ref(db, 'usersLocation/'));
+    
+    // For each user (phone number), update their coordinates
+    const updatePromises = [];
+    usersSnapshot.forEach((userSnapshot) => {
+      const phoneNumber = userSnapshot.key;
+      const userRef = ref(db, `usersLocation/${phoneNumber}`);
+      
+      const updates = {
+        eventlatitude: 0,
+        eventlongitude: 0
+      };
+      
+      updatePromises.push(update(userRef, updates));
+    });
+    
+    await Promise.all(updatePromises);
+    
+  } catch (error) {
+    console.error("Error removing event location:", error);
+    throw error;
+  }
+}
+
 export {
   loginUser,
   readUserData,
@@ -144,4 +179,5 @@ export {
   writeEventLocation,
   writeEventLocationByUser,
   readEventLoaction,
+  removeEventFromDB,
 };
