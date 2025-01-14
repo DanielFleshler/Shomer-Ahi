@@ -105,13 +105,18 @@ function writeUserLocationToDB(phoneNumber, latitude, longitude) {
 }
 function eventLocationListner(phoneNumber, onLocationUpdate) {
     const eventL = ref(db, 'usersLocation/' + phoneNumber + '/eventlatitude');
+    
     onValue(eventL, (snapshot) => {
         const eventLat = snapshot.val();
         console.log('Firebase eventlatitude received:', eventLat);
         
         get(ref(db, 'usersLocation/' + phoneNumber + '/eventlongitude')).then((longitudeSnapshot) => {
             const eventLong = longitudeSnapshot.val();
-            if (eventLat != '0' && eventLong != '0') {
+            
+            // If either value is '0' or null, clear the location
+            if (eventLat === '0' || eventLong === '0' || !eventLat || !eventLong) {
+                onLocationUpdate([]);
+            } else {
                 const locationData = [parseFloat(eventLat), parseFloat(eventLong)];
                 onLocationUpdate(locationData);
             }

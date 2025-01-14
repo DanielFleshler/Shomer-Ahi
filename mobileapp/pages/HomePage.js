@@ -21,9 +21,7 @@ import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
 import _ from 'lodash';
 
-
 I18nManager.forceRTL(true);
-
 
 const getRouting = async (userLoc, eventLoc) => {
   try {
@@ -78,7 +76,6 @@ export default function HomePage() {
         ];
         setUserLocation(newLocation);
 
-
         locationSubscription = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.Balanced,
@@ -106,7 +103,12 @@ export default function HomePage() {
     const unsubscribe = eventLocationListner(
       userData.phoneNumber,
       (locationData) => {
-        setEventLocation(locationData);
+        // Update state based on the location data
+        setEventLocation(locationData || []);
+        // Clear routing data if event location is cleared
+        if (!locationData || locationData.length === 0) {
+          setRoutingData([]);
+        }
       }
     );
 
@@ -122,7 +124,6 @@ export default function HomePage() {
     };
   }, [userData.phoneNumber]);
 
-
   useEffect(() => {
     if (isInitialMount.current && userLocation.length > 0 && mapRef.current) {
       mapRef.current.animateToRegion({
@@ -135,10 +136,15 @@ export default function HomePage() {
     }
   }, [userLocation]);
 
-
   useEffect(() => {
     const updateRouting = async () => {
-      if (userLocation.length > 0 && eventLocation.length > 0) {
+      // Only update routing if both locations are valid
+      if (
+        userLocation.length === 2 && 
+        eventLocation.length === 2 && 
+        eventLocation[0] !== 0 && 
+        eventLocation[1] !== 0
+      ) {
         const coordinates = await getRouting(userLocation, eventLocation);
         if (coordinates.length > 0) {
           setRoutingData(coordinates);
@@ -150,9 +156,12 @@ export default function HomePage() {
             longitudeDelta: Math.abs(userLocation[1] - eventLocation[1]) * 1.5,
           };
           setTimeout(() => {
-          mapRef.current?.animateToRegion(bounds, 1000);
-          },2000);
+            mapRef.current?.animateToRegion(bounds, 1000);
+          }, 2000);
         }
+      } else {
+        // Clear routing data if either location is invalid
+        setRoutingData([]);
       }
     };
     updateRouting();
@@ -163,7 +172,7 @@ export default function HomePage() {
   };
 
   const centerOnUser = () => {
-    if (userLocation.length > 0) {
+    if (userLocation.length === 2) {
       mapRef.current.animateToRegion(
         {
           latitude: userLocation[0],
@@ -175,8 +184,13 @@ export default function HomePage() {
       );
     }
   };
+
   const EventMarker = useMemo(() => {
-    if (eventLocation.length > 0) {
+    if (
+      eventLocation.length === 2 && 
+      eventLocation[0] !== 0 && 
+      eventLocation[1] !== 0
+    ) {
       return (
         <Marker
           coordinate={{
@@ -196,20 +210,23 @@ export default function HomePage() {
   }, [eventLocation]);
 
   const RoutePolyline = useMemo(() => {
-    if (routingData.length > 0) {
+    if (
+      routingData.length > 0 && 
+      eventLocation.length === 2 && 
+      eventLocation[0] !== 0 && 
+      eventLocation[1] !== 0
+    ) {
       return (
         <Polyline
           coordinates={routingData}
           strokeColor="#000"
-          strokeColors={[
-            "#2E5077",
-          ]}
+          strokeColors={["#2E5077"]}
           strokeWidth={6}
         />
       );
     }
     return null;
-  }, [routingData]);
+  }, [routingData, eventLocation]);
 
   return (
     <SafeAreaView style={styles.container}>
