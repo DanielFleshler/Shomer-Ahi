@@ -4,7 +4,9 @@ import '../../styles/components/Modal.css';
 
 
 
-const CreateEventModal = ({ onClose, onConfirm }) => (
+
+const CreateEventModal = ({ onClose, onConfirm }) => {
+  return (
     <div className="modal-overlay">
       <div className="modal-content">
         <div className="modal-header">
@@ -24,6 +26,7 @@ const CreateEventModal = ({ onClose, onConfirm }) => (
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
 export default CreateEventModal;

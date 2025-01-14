@@ -2,6 +2,8 @@ import {
   readUserData,
   deleteUserInDB,
   readUserLocation,
+  readEventLoaction,
+  writeEventLocationByUser,
 } from "../../firebase/FirebaseFunctions";
 import { validateUser } from "../../firebase/FirebaseFunctions";
 export const handleSearchLocation = async (location, setMapCenter = null) => {
@@ -68,3 +70,9 @@ export const handleUserLocation = async (setUsersLocations) => {
     console.error("Error fetching user locations and data:", error);
   }
 };
+export const handleUserDispatch = async (phoneNumber) => {
+  console.log("dispatch for phone number:", phoneNumber);
+  let eventLocation = await readEventLoaction();
+  console.log("event location:", eventLocation);
+  writeEventLocationByUser(phoneNumber, eventLocation.latitude, eventLocation.longitude);
+}

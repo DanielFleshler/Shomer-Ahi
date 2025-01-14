@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ScrollView, I18nManager } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet,Image, ScrollView, I18nManager } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { UserContext } from './UserContext';
@@ -40,6 +40,10 @@ const LoginPage = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.title}>שומר אחי</Text>
+
+        <Image source={require('../assets/logo.png')}
+        style={styles.logo}
+        resizeMode="contain" />
 
         <View style={styles.inputContainer}>
           <TextInput
@@ -98,6 +102,12 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     color: "#333",
     textAlign: "center",
+  },
+  logo: {
+    width: 250,
+    height: 200,
+    alignSelf: "center",
+    marginBottom: 30,
   },
   inputContainer: {
     flexDirection: 'row',

@@ -1,15 +1,23 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef,useCallback } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import '../../styles/components/MapView.css';
 import '../../styles/components/Markers.css';
 import "leaflet/dist/leaflet.css";
+import { handleUserDispatch } from "../Dashboard/DashboardFunctions";
 
-const UpdateMapView = ({ center, usersLocations, CreateEvent }) => {
+const UpdateMapView = ({ center, usersLocations, CreateEvent}) => {
     const map = useMap();
     const userMarkers = useRef({});
     const eventMarker = useRef(null);
   
+    const handleOnDispatch = useCallback((phoneNumber) => {
+      console.log("dispatch for phone number:", phoneNumber);
+      handleUserDispatch(phoneNumber);
+    }, []);
+
+
+
     useEffect(() => {
       if (map && center) {
         map.setView(center, 7.6);
@@ -39,7 +47,10 @@ const UpdateMapView = ({ center, usersLocations, CreateEvent }) => {
           const oldMarker = userMarkers.current[userLocation.phoneNumber];
           
           if (oldMarker) {
-            oldMarker.setLatLng([userLocation.latitude, userLocation.longitude]);
+            oldMarker.setLatLng([userLocation.latitude, userLocation.longitude]);            
+            oldMarker.on("click", () => {
+              map.setView([userLocation.latitude, userLocation.longitude], 17);
+            });
           } else {
             const userPulsingIcon = L.divIcon({
               className: "user-pulsing-icon",
@@ -57,11 +68,14 @@ const UpdateMapView = ({ center, usersLocations, CreateEvent }) => {
                 שם פרטי: ${userLocation.firstName || 'N/A'}<br>
                 שם משפחה: ${userLocation.lastName || 'N/A'}<br>
                 מספר פלאפון: ${userLocation.phoneNumber}<br>
-                <button>הזנק</button>
+                <button onclick="window.dispatchUser('${userLocation.phoneNumber}')">הזנק</button>
               </div>
               `
             )
-              .addTo(map);
+            .addTo(map);
+            window.dispatchUser = (phoneNumber) => {
+              handleOnDispatch(phoneNumber);
+            };
             newMarker.on("click", () => {
               map.setView([userLocation.latitude, userLocation.longitude], 17);
             });
@@ -69,7 +83,7 @@ const UpdateMapView = ({ center, usersLocations, CreateEvent }) => {
           }
         });
       }
-    }, [center, map, usersLocations, CreateEvent]);
+    }, [center, map, usersLocations, CreateEvent,handleOnDispatch]);
   
     return null;
   };

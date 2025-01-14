@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView, I18nManager } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert,Image, ScrollView, I18nManager } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { registerUser } from "../firebase/firebaseFunctions";
 import { Ionicons } from '@expo/vector-icons';
@@ -8,43 +8,116 @@ import { Ionicons } from '@expo/vector-icons';
 I18nManager.forceRTL(true);
 
 function RegisterForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [licenseNumber, setLicenseNumber] = useState("");
-    const [licensePhoto, setLicensePhoto] = useState(null);
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        licenseNumber: "",
+    });
+    const [errors, setErrors] = useState({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        licenseNumber: "",
+    });
     const [showPassword, setShowPassword] = useState(false);
-
     const navigation = useNavigation();
 
-    const handleLogin = () => {
-        navigation.navigate("Login");
+    const validators = {
+        email: (value) => {
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!value) return "שדה האימייל הוא חובה";
+            if (!emailRegex.test(value)) return "כתובת האימייל אינה תקינה";
+            return "";
+        },
+        password: (value) => {
+            if (!value) return "שדה הסיסמה הוא חובה";
+            if (value.length < 6) return "הסיסמה חייבת להכיל לפחות 6 תווים";
+            return "";
+        },
+        confirmPassword: (value) => {
+            if (!value) return "אנא אמת את הסיסמה";
+            if (value !== formData.password) return "הסיסמאות אינן תואמות";
+            return "";
+        },
+        firstName: (value) => {
+            if (!value) return "שדה שם פרטי הוא חובה";
+            if (value.length < 2) return "שם פרטי חייב להכיל לפחות 2 תווים";
+            return "";
+        },
+        lastName: (value) => {
+            if (!value) return "שדה שם משפחה הוא חובה";
+            if (value.length < 2) return "שם משפחה חייב להכיל לפחות 2 תווים";
+            return "";
+        },
+        phoneNumber: (value) => {
+            const phoneRegex = /^05\d{8}$/;
+            if (!value) return "שדה מספר טלפון הוא חובה";
+            if (!phoneRegex.test(value)) return "מספר טלפון לא תקין";
+            return "";
+        },
+        licenseNumber: (value) => {
+            if (!value) return "שדה מספר רישיון הוא חובה";
+            if (value.length < 7) return "מספר רישיון חייב להכיל 7 ספרות";
+            return "";
+        }
+        
+    };
+
+    const handleChange = (name, value) => {
+        const newFormData = { ...formData, [name]: value };
+        setFormData(newFormData);
+        
+        const error = validators[name](value);
+        setErrors(prev => ({ ...prev, [name]: error }));
+        
+        // Special case for confirm password
+        if (name === 'password') {
+            const confirmError = validators.confirmPassword(newFormData.confirmPassword);
+            setErrors(prev => ({ ...prev, confirmPassword: confirmError }));
+        }
     };
 
     const handleSubmit = async () => {
-        if (password !== confirmPassword) {
-            Alert.alert("שגיאה", "הסיסמאות אינן תואמות.");
+        const newErrors = {};
+        let hasErrors = false;
+        
+        Object.keys(validators).forEach(field => {
+            const error = validators[field](formData[field]);
+            newErrors[field] = error;
+            if (error) hasErrors = true;
+        });
+        
+        setErrors(newErrors);
+
+        if (hasErrors) {
+            Alert.alert("שגיאה", "אנא תקן את השגיאות בטופס");
             return;
         }
 
         const userData = {
-            email,
-            firstName,
-            lastName,
-            phoneNumber,
-            licenseNumber,
-            licensePhoto,
+            email: formData.email,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phoneNumber: formData.phoneNumber,
+            licenseNumber: formData.licenseNumber,
             isUserValid: false,
         };
 
-        const isRegistered = await registerUser(email, password, userData);
-        if (isRegistered) {
-            navigation.navigate("Login");
-        } else {
-            Alert.alert("שגיאה", "ההרשמה נכשלה.");
+        try {
+            const isRegistered = await registerUser(formData.email, formData.password, userData);
+            if (isRegistered) {
+                Alert.alert("הצלחה", "ההרשמה בוצעה בהצלחה");
+                navigation.navigate("Login");
+            }
+        } catch (error) {
+            Alert.alert("שגיאה", "ההרשמה נכשלה. אנא נסה שוב.");
         }
     };
 
@@ -53,103 +126,125 @@ function RegisterForm() {
             <View style={styles.formContainer}>
                 <Text style={styles.title}>הרשמה</Text>
 
+                <Image source={require('../assets/logo.png')}
+                        style={styles.logo}
+                        resizeMode="contain" />
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, errors.firstName && styles.inputError]}
                         placeholder="שם פרטי"
-                        value={firstName}
-                        onChangeText={setFirstName}
+                        value={formData.firstName}
+                        onChangeText={(text) => handleChange("firstName", text)}
                         placeholderTextColor="#999"
                     />
                     <Ionicons name="person-outline" size={24} color="#999" style={styles.icon} />
                 </View>
+                {errors.firstName ? <Text style={styles.errorText}>{errors.firstName}</Text> : null}
 
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, errors.lastName && styles.inputError]}
                         placeholder="שם משפחה"
-                        value={lastName}
-                        onChangeText={setLastName}
+                        value={formData.lastName}
+                        onChangeText={(text) => handleChange("lastName", text)}
                         placeholderTextColor="#999"
                     />
                     <Ionicons name="person-outline" size={24} color="#999" style={styles.icon} />
                 </View>
+                {errors.lastName ? <Text style={styles.errorText}>{errors.lastName}</Text> : null}
 
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, errors.email && styles.inputError]}
                         placeholder="אימייל"
-                        value={email}
-                        onChangeText={setEmail}
+                        value={formData.email}
+                        onChangeText={(text) => handleChange("email", text.toLowerCase())}
                         keyboardType="email-address"
                         placeholderTextColor="#999"
+                        autoCapitalize="none"
+                        autoCorrect={false}
                     />
                     <Ionicons name="mail-outline" size={24} color="#999" style={styles.icon} />
                 </View>
+                {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
 
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, errors.phoneNumber && styles.inputError]}
                         placeholder="מספר טלפון"
-                        value={phoneNumber}
-                        onChangeText={setPhoneNumber}
+                        value={formData.phoneNumber}
+                        onChangeText={(text) => {
+                            const numbersOnly = text.replace(/[^0-9]/g, '');
+                            handleChange("phoneNumber", numbersOnly);
+                        }}
                         keyboardType="phone-pad"
                         placeholderTextColor="#999"
                     />
                     <Ionicons name="call-outline" size={24} color="#999" style={styles.icon} />
                 </View>
+                {errors.phoneNumber ? <Text style={styles.errorText}>{errors.phoneNumber}</Text> : null}
 
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, errors.licenseNumber && styles.inputError]}
                         placeholder="מספר רישיון"
-                        value={licenseNumber}
-                        onChangeText={setLicenseNumber}
+                        value={formData.licenseNumber}
+                        onChangeText={(text) => {
+                            const numbersOnly = text.replace(/[^0-9]/g, '');
+                            handleChange("licenseNumber", numbersOnly);
+                        }}
+                        keyboardType="phone-pad"
                         placeholderTextColor="#999"
+                        maxLength={7}
                     />
                     <Ionicons name="card-outline" size={24} color="#999" style={styles.icon} />
                 </View>
+                {errors.licenseNumber ? <Text style={styles.errorText}>{errors.licenseNumber}</Text> : null}
 
                 <View style={styles.inputContainer}>
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
                         <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={24} color="#999" />
                     </TouchableOpacity>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, errors.password && styles.inputError]}
                         placeholder="סיסמה"
-                        value={password}
-                        onChangeText={setPassword}
+                        value={formData.password}
+                        onChangeText={(text) => handleChange("password", text)}
                         secureTextEntry={!showPassword}
                         placeholderTextColor="#999"
                     />
                     <Ionicons name="lock-closed-outline" size={24} color="#999" style={styles.icon} />
                 </View>
+                {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
 
                 <View style={styles.inputContainer}>
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
                         <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={24} color="#999" />
                     </TouchableOpacity>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, errors.confirmPassword && styles.inputError]}
                         placeholder="אימות סיסמה"
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
+                        value={formData.confirmPassword}
+                        onChangeText={(text) => handleChange("confirmPassword", text)}
                         secureTextEntry={!showPassword}
                         placeholderTextColor="#999"
                     />
                     <Ionicons name="lock-closed-outline" size={24} color="#999" style={styles.icon} />
                 </View>
+                {errors.confirmPassword ? <Text style={styles.errorText}>{errors.confirmPassword}</Text> : null}
 
-                <TouchableOpacity style={styles.fileButton}>
-                    <Text style={styles.fileButtonText}>העלה תמונת רישיון</Text>
-                    <Ionicons name="camera-outline" size={24} color="#fff" style={styles.buttonIcon} />
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                <TouchableOpacity 
+                    style={[
+                        styles.submitButton,
+                        Object.values(errors).some(error => error) && styles.submitButtonDisabled
+                    ]} 
+                    onPress={handleSubmit}
+                    disabled={Object.values(errors).some(error => error)}
+                >
                     <Text style={styles.submitButtonText}>הרשם</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={handleLogin}>
+                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                     <Text style={styles.loginLink}>כבר יש לך חשבון? התחבר</Text>
                 </TouchableOpacity>
             </View>
@@ -172,10 +267,14 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 32,
         fontWeight: "bold",
-        marginBottom: 30,
         color: "#333",
         textAlign: "center",
     },
+    logo: {
+        width: 200,
+        height: 100,
+        alignSelf: "center",
+      },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -234,7 +333,19 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginTop: 10,
     },
+    inputError: {
+        borderBottomColor: '#FF3B30',
+    },
+    errorText: {
+        color: '#FF3B30',
+        fontSize: 12,
+        marginTop: -15,
+        marginBottom: 15,
+        textAlign: 'right',
+    },
+    submitButtonDisabled: {
+        backgroundColor: '#A5CDE8',
+    },
 });
 
 export default RegisterForm;
-
