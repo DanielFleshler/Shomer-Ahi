@@ -2,7 +2,7 @@
 import {auth,db} from './config';
 import {User} from './User';
 import {signInWithEmailAndPassword,createUserWithEmailAndPassword} from "firebase/auth";
-import { child, get,ref,set } from "firebase/database";
+import { child, get, ref, set, update, onValue, off } from "firebase/database";
 
 
 
@@ -45,12 +45,13 @@ function writeUserData(userData) {
         lastName: userData.lastName,
         phoneNumber: userData.phoneNumber,
         licenseNumber: userData.licenseNumber,
-        licensePhoto: "test",
         isUserValid: false
     });
     set(ref(db, 'usersLocation/' + userData.phoneNumber), {
         latitude: 0,
-        longitude: 0
+        longitude: 0,
+        eventlatitude: 0,
+        eventlongitude: 0
     });
   }
   function readUserData(userEmail) {
@@ -58,6 +59,8 @@ function writeUserData(userData) {
         .then((snapshot) => {
             let foundUser = null;
             snapshot.forEach((childSnapshot) => {
+                console.log("user email:", userEmail);
+                console.log("childSnapshot:", childSnapshot.val().email);
                 if (childSnapshot.val().email === userEmail) {
                     foundUser = new User(
                         childSnapshot.val().email,
@@ -70,6 +73,7 @@ function writeUserData(userData) {
                     );
                 }
             });
+            console.log("Found user:", foundUser);
             return foundUser;
         })
         .catch((error) => {
@@ -94,9 +98,27 @@ function readUserLocation(phoneNumber){
     });
   }
 function writeUserLocationToDB(phoneNumber, latitude, longitude) {
-    set(ref(db, 'usersLocation/' + phoneNumber), {
-        latitude: latitude,
-        longitude: longitude
-    });
+        const updates = {};
+        updates['/latitude'] = latitude;
+        updates['/longitude'] = longitude;
+        update(ref(db,'usersLocation/' + phoneNumber), updates);
 }
-export {loginUser,registerUser,writeUserData,readUserLocation,writeUserLocationToDB}
+function eventLocationListner(phoneNumber, onLocationUpdate) {
+    const eventL = ref(db, 'usersLocation/' + phoneNumber + '/eventlatitude');
+    onValue(eventL, (snapshot) => {
+        const eventLat = snapshot.val();
+        console.log('Firebase eventlatitude received:', eventLat);
+        
+        get(ref(db, 'usersLocation/' + phoneNumber + '/eventlongitude')).then((longitudeSnapshot) => {
+            const eventLong = longitudeSnapshot.val();
+            if (eventLat != '0' && eventLong != '0') {
+                const locationData = [parseFloat(eventLat), parseFloat(eventLong)];
+                onLocationUpdate(locationData);
+            }
+        });
+    });
+
+    return () => off(ref(db, 'usersLocation/' + phoneNumber + '/eventlatitude'));
+}
+export {loginUser,registerUser,writeUserData,readUserLocation,writeUserLocationToDB,eventLocationListner}
+

@@ -4,9 +4,10 @@ import UpdateMapView from '../Map/MapView';
 import Sidebar from '../Sidebar/Sidebar';
 import UserApprovalModal from '../Modals/UserApprovalModal';
 import CreateEventModal from '../Modals/CreateEventModal';
-import { handleSearchLocation, handleUsers, handleApprove, handleReject, handleUserLocation } from './DashboardFunctions';
+import { handleSearchLocation, handleUsers, handleApprove, handleReject, handleUserLocation} from './DashboardFunctions';
 import 'leaflet/dist/leaflet.css';
 import '../../styles/layout/Dashboard.css';
+import { writeEventLocation } from '../../firebase/FirebaseFunctions';
 
 function Dashboard() {
   const [showModal, setShowModal] = useState(false);
@@ -48,6 +49,10 @@ function Dashboard() {
 
   const handleCreateEventResponse = (createEvent) => {
     setShowCreateEventModal(false);
+    if(createEvent){
+      console.log("Event location:",mapCenter);
+      writeEventLocation(mapCenter[0], mapCenter[1]);
+    }
     setCreateEvent(createEvent);
   };
 
@@ -88,6 +93,7 @@ function Dashboard() {
             center={mapCenter}
             usersLocations={usersLocations}
             CreateEvent={CreateEvent}
+            eventLocation={mapCenter}
           />
         </MapContainer>
       </div>

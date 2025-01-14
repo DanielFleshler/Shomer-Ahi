@@ -1,6 +1,6 @@
 import app from "./config";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref, get, set, remove } from "firebase/database";
+import { getDatabase, ref, get, set, remove,update } from "firebase/database";
 import { User } from "./User";
 
 const auth = getAuth(app);
@@ -44,7 +44,6 @@ async function readUserData(validateOnly = false) {
           userData.lastName,
           userData.phoneNumber,
           userData.licenseNumber,
-          userData.licensePhoto,
           userData.isUserValid
         );
         users.push(user);
@@ -103,15 +102,36 @@ async function deleteUserInDB(phoneNumber, email) {
   }
 }
 
-async function writeEmergencyLocation(latitude, longitude) {
+async function writeEventLocation(latitude, longitude) {
   try {
-    await set(ref(db, "emergencyLocation/"), {
+    await set(ref(db, "eventLocation/"), {
       latitude: latitude,
       longitude: longitude,
     });
   } catch (error) {
     console.error("Error writing emergency location:", error);
     throw error;
+  }
+}
+async function writeEventLocationByUser(phoneNumber, latitude, longitude) {
+  try {
+    const updates = {};
+    updates['/eventlatitude'] = latitude;
+    updates['/eventlongitude'] = longitude;
+    update(ref(db,'usersLocation/' + phoneNumber), updates);
+
+  } catch (error) {
+    console.error("Error writing event location:", error);
+    throw error;
+  }
+}
+async function readEventLoaction() {
+  try {
+    const snapshot = await get(ref(db, "eventLocation/"));
+    return snapshot.val();
+  } catch (error) {
+    console.error("Error reading event location:", error);
+    return null;
   }
 }
 
@@ -121,5 +141,7 @@ export {
   validateUser,
   deleteUserInDB,
   readUserLocation,
-  writeEmergencyLocation,
+  writeEventLocation,
+  writeEventLocationByUser,
+  readEventLoaction,
 };
