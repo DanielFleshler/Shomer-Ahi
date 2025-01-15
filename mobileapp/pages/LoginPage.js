@@ -18,19 +18,44 @@ const LoginPage = () => {
   const handleLogin = () => {
     if (email === '' || password === '') {
       Alert.alert('שגיאה', 'אנא מלא את כל השדות.');
-    } else {
-      return loginUser(email, password).then((userData) => {
-        if (userData) {
-          Alert.alert('הצלחה', 'התחברת בהצלחה.');
-          setUserData(userData);
-          console.log("LoginPage userData:", userData);
-          navigation.navigate('Home');
-        } else {
-          Alert.alert('שגיאה', 'אימייל או סיסמה לא נכונים.');
-        }
-      });
+      return;
     }
-  };
+
+    loginUser(email, password).then((result) => {
+      if (result.success) {
+        Alert.alert('הצלחה', 'התחברת בהצלחה.');
+        setUserData(result.userData);
+        console.log("LoginPage userData:", result.userData);
+        navigation.navigate('Home');
+      } else {
+        switch (result.error) {
+          case 'INVALID_USER':
+            Alert.alert(
+              'משתמש לא מאושר',
+              'המשתמש שלך עדיין לא אושר על ידי המערכת. אנא המתן לאישור.'
+            );
+            break;
+          case 'AUTH_FAILED':
+            Alert.alert(
+              'שגיאת התחברות',
+              'אימייל או סיסמה לא נכונים.'
+            );
+            break;
+          default:
+            Alert.alert(
+              'שגיאה',
+              'אירעה שגיאה בהתחברות. אנא נסה שוב.'
+            );
+        }
+      }
+    }).catch((error) => {
+      console.error('Login error:', error);
+      Alert.alert(
+        'שגיאה',
+        'אירעה שגיאה בהתחברות. אנא נסה שוב מאוחר יותר.'
+      );
+    });
+};
 
   const handleRegister = () => {
     navigation.navigate('Register');
