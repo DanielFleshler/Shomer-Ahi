@@ -12,16 +12,15 @@ function loginUser(email, password) {
             return readUserData(userCredential._tokenResponse.email)
                 .then((userData) => {
                     console.log("User data:", userData);
-                    if (!userData || userData.isUserValid === false) {
-                        console.log("User is not valid");
-                        return false;
+                    if (userData.isUserValid === false) {
+                        return { error: 'INVALID_USER' };
                     }
-                    return userData;
+                    return { success: true, userData };
                 });
         })
         .catch((error) => {
             console.error("Error logging in:", error.message);
-            return false;
+            return { error: 'AUTH_FAILED' };
         });
 }
 function registerUser(email, password, userData) {
@@ -68,7 +67,6 @@ function writeUserData(userData) {
                         childSnapshot.val().lastName,
                         childSnapshot.val().phoneNumber,
                         childSnapshot.val().licenseNumber,
-                        childSnapshot.val().licensePhoto,
                         childSnapshot.val().isUserValid
                     );
                 }
