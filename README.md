@@ -15,7 +15,7 @@ Shomer Ahi is a comprehensive security response platform designed to bridge the 
 ## Screenshots
 <div align="center" style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
     <img src="https://github.com/user-attachments/assets/328ba69d-e5a0-45e9-8f38-70512c5a01b8" alt="Application Screenshot 1" width="400"/>
-    <img src="https://github.com/user-attachments/assets/0150ca82-cd99-4097-abcd-af793329973d" alt="Application Screenshot 2" width="400"/>
+    <img src="https://github.com/user-attachments/assets/0150ca82-cd99-4097-abcd-af793329973d" alt="Application Screenshot 2" width="800"/>
     <img src="https://github.com/user-attachments/assets/f5891052-4e59-4af7-af7f-1afc86ebe41c" alt="Application Screenshot 3" width="400"/>
     <img src="https://github.com/user-attachments/assets/6fb739b2-6789-43a0-b2df-4f04a200b14a" alt="Application Screenshot 4" width="400"/>
     <img src="https://github.com/user-attachments/assets/19fb29a2-eb86-47eb-8c1c-a3d9698b9f10" alt="Application Screenshot 5" width="400"/>
