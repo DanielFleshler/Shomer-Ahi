@@ -1,4 +1,4 @@
-# 🛡️ Shomer Ahi
+# Shomer Ahi
 
 [![React](https://img.shields.io/badge/React-19.0-blue.svg)](https://reactjs.org/)
 [![React Native](https://img.shields.io/badge/React%20Native-0.76-blue.svg)](https://reactnative.dev/)
