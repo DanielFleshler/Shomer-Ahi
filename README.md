@@ -13,11 +13,13 @@ ation system with web dashboard and mobile app components.
 Shomer Ahi is a comprehensive security response platform designed to bridge the gap between command centers and field responders. The system provides real-time coordination, location tracking, and event management capabilities through a web-based admin dashboard and a mobile application for field personnel.
 
 ## Screenshots
-![Screenshot 2025-01-27 at 20 08 42](https://github.com/user-attachments/assets/328ba69d-e5a0-45e9-8f38-70512c5a01b8)
-![Screenshot 2025-01-27 at 20 08 27](https://github.com/user-attachments/assets/0150ca82-cd99-4097-abcd-af793329973d)
-![Screenshot 2025-01-27 at 20 09 19](https://github.com/user-attachments/assets/f5891052-4e59-4af7-af7f-1afc86ebe41c)
-![Screenshot 2025-01-27 at 20 08 59](https://github.com/user-attachments/assets/6fb739b2-6789-43a0-b2df-4f04a200b14a)
-![Screenshot 2025-01-27 at 20 12 06](https://github.com/user-attachments/assets/19fb29a2-eb86-47eb-8c1c-a3d9698b9f10)
+<div align="center" style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
+    <img src="https://github.com/user-attachments/assets/328ba69d-e5a0-45e9-8f38-70512c5a01b8" alt="Application Screenshot 1" width="800"/>
+    <img src="https://github.com/user-attachments/assets/0150ca82-cd99-4097-abcd-af793329973d" alt="Application Screenshot 2" width="800"/>
+    <img src="https://github.com/user-attachments/assets/f5891052-4e59-4af7-af7f-1afc86ebe41c" alt="Application Screenshot 3" width="800"/>
+    <img src="https://github.com/user-attachments/assets/6fb739b2-6789-43a0-b2df-4f04a200b14a" alt="Application Screenshot 4" width="800"/>
+    <img src="https://github.com/user-attachments/assets/19fb29a2-eb86-47eb-8c1c-a3d9698b9f10" alt="Application Screenshot 5" width="800"/>
+</div>
 
 ### Key Features
 - Real-time location tracking and sharing
