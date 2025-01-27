@@ -20,13 +20,10 @@ Shomer Ahi is a comprehensive security response platform designed to bridge the 
 
 
 ## 📑 Table of Contents
-- [Features](#features)
+- [Features](#Features)
 - [Architecture](#architecture)
 - [Security](#security)
-- [Contributing](#contributing)
-- [Testing](#testing)
-- [License](#license)
-- [Contact](#contact)
+
 
 ## 🚀 Installation
 
@@ -79,27 +76,6 @@ Shomer Ahi is a comprehensive security response platform designed to bridge the 
 - Location data encryption
 - Session management
 - Role-based access control
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit changes
-4. Push to branch
-5. Open pull request
-
-## 🧪 Testing
-
-### Web Dashboard
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Contact
-
-- **Project Maintainer**: [Your Name]
-- **Email**: [your.email@example.com]
-- **Issues**: [GitHub Issues](https://github.com/yourusername/shomer-ahi/issues)
 
 ## 🙏 Acknowledgments
 
