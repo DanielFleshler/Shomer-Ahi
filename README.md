@@ -20,7 +20,6 @@ Shomer Ahi is a comprehensive security response platform designed to bridge the 
 
 
 ## 📑 Table of Contents
-- [Usage](#usage)
 - [Features](#features)
 - [Architecture](#architecture)
 - [Security](#security)
