@@ -18,17 +18,8 @@ Shomer Ahi is a comprehensive security response platform designed to bridge the 
 - User authentication and authorization
 - RTL (Right-to-Left) support for Hebrew
 
-### Target Audience
-- Security organizations
-- Emergency response teams
-- Field operations coordinators
-- Security personnel and responders
 
 ## 📑 Table of Contents
-
-- [Installation](#installation)
-  - [Web Dashboard](#web-dashboard)
-  - [Mobile App](#mobile-app)
 - [Usage](#usage)
 - [Features](#features)
 - [Architecture](#architecture)
