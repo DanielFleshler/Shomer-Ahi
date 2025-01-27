@@ -1,0 +1,137 @@
+# 🛡️ Shomer Ahi
+
+[![React](https://img.shields.io/badge/React-19.0-blue.svg)](https://reactjs.org/)
+[![React Native](https://img.shields.io/badge/React%20Native-0.76-blue.svg)](https://reactnative.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-11.1-orange.svg)](https://firebase.google.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+A real-time security response coordination system with web dashboard and mobile app components.
+
+## 📝 Description
+
+Shomer Ahi is a comprehensive security response platform designed to bridge the gap between command centers and field responders. The system provides real-time coordination, location tracking, and event management capabilities through a web-based admin dashboard and a mobile application for field personnel.
+
+### Key Features
+- Real-time location tracking and sharing
+- Event creation and management
+- Route optimization and navigation
+- User authentication and authorization
+- RTL (Right-to-Left) support for Hebrew
+
+### Target Audience
+- Security organizations
+- Emergency response teams
+- Field operations coordinators
+- Security personnel and responders
+
+## 📑 Table of Contents
+
+- [Installation](#installation)
+  - [Web Dashboard](#web-dashboard)
+  - [Mobile App](#mobile-app)
+- [Usage](#usage)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Security](#security)
+- [Contributing](#contributing)
+- [Testing](#testing)
+- [License](#license)
+- [Contact](#contact)
+
+## 🚀 Installation
+
+### Prerequisites
+
+#### Web Dashboard
+- Node.js >= 16.0.0
+- npm >= 8.0.0
+- Modern web browser
+- Firebase account
+
+#### Mobile App
+- Node.js >= 16.0.0
+- Expo CLI
+- iOS/Android development environment
+- Firebase account
+
+## 🎯 Features
+
+### Web Dashboard Features
+- Interactive map interface with Leaflet
+- Real-time user tracking
+- Event creation and management
+- User approval system
+- Route optimization
+- RTL support for Hebrew
+
+### Mobile App Features
+- Real-time location sharing
+- Turn-by-turn navigation
+- Event notifications
+- Offline map support
+- Background location updates
+
+## 🏗️ Architecture
+
+### Technology Stack
+- **Frontend**: React 19.0
+- **Mobile**: React Native 0.76
+- **Database**: Firebase Realtime Database
+- **Maps**: Leaflet & React Native Maps
+- **Routing**: Leaflet Routing Machine
+- **Styling**: Styled Components
+
+## 🔒 Security
+
+- Firebase Authentication
+- Phone number verification
+- Admin approval system
+- Location data encryption
+- Session management
+- Role-based access control
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit changes
+4. Push to branch
+5. Open pull request
+
+## 🧪 Testing
+
+### Web Dashboard
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Contact
+
+- **Project Maintainer**: [Your Name]
+- **Email**: [your.email@example.com]
+- **Issues**: [GitHub Issues](https://github.com/yourusername/shomer-ahi/issues)
+
+## 🙏 Acknowledgments
+
+- OpenStreetMap for mapping services
+- Firebase team for real-time database
+- React and React Native communities
+- Expo team for mobile development tools
+- Leaflet contributors
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **Location Permission Issues**
+   - Ensure location permissions are granted
+   - Check device GPS settings
+
+2. **Firebase Connection**
+   - Verify Firebase credentials
+   - Check network connectivity
+
+3. **Map Loading Issues**
+   - Clear browser cache
+   - Check internet connection
+   - Verify API keys
